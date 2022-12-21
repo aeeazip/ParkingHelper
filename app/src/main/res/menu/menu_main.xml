@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="주차장 구분" >
+        <menu >
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/PP"
+                    android:checked="true"
+                    android:title="공영" />
+                <item
+                    android:id="@+id/PM"
+                    android:title="민영" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="주차장 유형" >
+        <menu >
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/OFF"
+                    android:checked="true"
+                    android:title="노외" />
+                <item android:id="@+id/ON" android:title="노상" />
+                <item android:id="@+id/ELSE" android:title="부설" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="요금 정보" >
+        <menu >
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/FREE"
+                    android:checked="true"
+                    android:title="무료" />
+                <item android:id="@+id/PAY" android:title="유료" />
+                <item android:id="@+id/MIX" android:title="혼합" />
+            </group>
+        </menu>
+    </item>
+</menu>
