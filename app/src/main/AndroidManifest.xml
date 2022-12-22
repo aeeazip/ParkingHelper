@@ -36,6 +36,8 @@
                 android:value="" />
         </activity>
         <activity android:name=".ParkingSearchActivity" />
+        <activity android:name=".Result" />
+        <activity android:name=".SearchResultActivity" />
     </application>
 
 </manifest>

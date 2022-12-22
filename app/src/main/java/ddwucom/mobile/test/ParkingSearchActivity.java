@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,13 +36,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceTypes;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,18 +65,18 @@ public class ParkingSearchActivity extends AppCompatActivity {
     String kind2 = "OFF"; // 주차장 유형
     String kind3 = "FREE"; // 요금 정보
 
-    Double lat;
-    Double log;
+    Double mLat = 360.0; // 위도 초기값
+    Double mLng = 360.0; // 경도 초기값
 
     FusedLocationProviderClient flpClient;
     Location mLastLocation;
     Marker marker;
     Marker mCenterMarker;
+    List<Marker> markerList;
 
     private GoogleMap mGoogleMap;       // 지도 객체
     private PlaceBasicManager placeBasicManager;
     private PlacesClient placesClient;
-    private List<Marker> markerList;
     private EditText editText;
 
     @Override
@@ -92,11 +98,11 @@ public class ParkingSearchActivity extends AppCompatActivity {
                 markerList = new ArrayList<Marker> ();
 
                 for (PlaceBasic place : list) {
-                    // 마커 찍기로 변경
+                    LatLng latLng = new LatLng (place.getLatitude (), place.getLongitude ());
 
                     // place 객체 하나에 대한 MarkerOptions 준비 완료
                     options.title (place.getName ());
-                    options.position (new LatLng (place.getLatitude (), place.getLongitude ()));
+                    options.position (latLng);
                     options.icon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_RED));
                     Marker marker = mGoogleMap.addMarker (options); // addMarker 반환 타입이 Marker임
                     marker.setTag (place.getPlaceId ());
@@ -147,6 +153,9 @@ public class ParkingSearchActivity extends AppCompatActivity {
         public void onMapReady(@NonNull GoogleMap googleMap) {
             mGoogleMap = googleMap;
 
+            checkPermission();
+            mGoogleMap.setMyLocationEnabled(true);
+
             // 지도 초기 위치 이동 (초기위치  : 동덕여자대학교)
             LatLng latLng = new LatLng (37.606320, 127.041808);
             // 지정한 위치로 애니메이션 이동
@@ -166,23 +175,10 @@ public class ParkingSearchActivity extends AppCompatActivity {
 
             /*마커의 InfoWindow 클릭 시 marker에 Tag 로 보관한 placeID 로
              * Google PlacesAPI 를 이용하여 장소의 상세정보*/
-            mGoogleMap.setOnInfoWindowClickListener (new GoogleMap.OnInfoWindowClickListener () {
-                @Override
-                public void onInfoWindowClick(@NonNull Marker marker) {
-                    // InfoWindowClick 함수 : InfoWindow 클릭할 때 동작하는 부분 (매개변수로 들어오는 마커는 클릭한 마커가 들어오는 것 : 우리는 마커에 tag정보로 placeId 저장해둠)
-
-                    // 1. 마커에서 Marker.getTag() 를 사용하여 placeID 확인
-                    String placeId = marker.getTag ().toString ();
-                    List<Place.Field> placeFields = Arrays.asList (Place.Field.ID, Place.Field.NAME, Place.Field.PHONE_NUMBER, Place.Field.ADDRESS);
-
-                    FetchPlaceRequest request = FetchPlaceRequest.builder (placeId, placeFields).build ();
-                    // placesClient.fetchPlace(request).addOnSuccessListener(new );
-
-                    // detail 정보 알아내서 Intent에 넣고 NEW 액티비티를 띄운다.
-                    // 2. getPlaceDetail() 을 호출하여 Place 검색
-                    getPlaceDetail (placeId);
-
-                    // 3. callDetailActivity() 에 Place 정보를 전달하고 DetailActivity 호출 (callDetailActivity() 사용)
+            mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener(){
+                public void onInfoWindowClick(Marker marker){
+                    String placeId = marker.getTag().toString();
+                    getPlaceDetail(placeId);
                 }
             });
         }
@@ -191,18 +187,22 @@ public class ParkingSearchActivity extends AppCompatActivity {
     LocationCallback mLocCallback = new LocationCallback () {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
-            for (Location loc : locationResult.getLocations ()) {
-                double lat = loc.getLatitude ();
-                double lng = loc.getLongitude ();
+            // 검색값이 있는 경우 현재 위치로 animateCamera 실행 X
 
-                // 지도 위치 이동 (가장 최근 위치 기록)
-                mLastLocation = loc;
-                LatLng currentLoc = new LatLng (lat, lng);
-                // 지정한 위치로 애니메이션 이동
-                mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (currentLoc, 17));
-                mCenterMarker.setPosition (currentLoc);
+            if(mLat == 360.0 && mLng == 360.0) {
+                for (Location loc : locationResult.getLocations ()) {
+                    double lat = loc.getLatitude ();
+                    double lng = loc.getLongitude ();
 
-                // Toast.makeText(ParkingSearchActivity.this, "위도 : " + lat + ", 경도 : " + lng, Toast.LENGTH_SHORT).show();
+                    // 지도 위치 이동 (가장 최근 위치 기록)
+                    mLastLocation = loc;
+                    LatLng currentLoc = new LatLng (lat, lng);
+                    // 지정한 위치로 애니메이션 이동
+                    mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (currentLoc, 17));
+                    mCenterMarker.setPosition (currentLoc);
+
+                    // Toast.makeText(ParkingSearchActivity.this, "위도 : " + lat + ", 경도 : " + lng, Toast.LENGTH_SHORT).show();
+                }
             }
         }
     };
@@ -224,22 +224,35 @@ public class ParkingSearchActivity extends AppCompatActivity {
     /*Place ID 의 장소에 대한 세부정보 획득하여 반환
      * 마커의 InfoWindow 클릭 시 호출*/
     private Place getPlaceDetail(String placeId) {
+        List<Place.Field> placeFields = Arrays.asList(
+                Place.Field.ID, Place.Field.NAME,
+                Place.Field.LAT_LNG
+        );
+
+        FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
+        placesClient.fetchPlace(request)
+                .addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>(){
+                    public void onSuccess(FetchPlaceResponse response){
+                        Place p = response.getPlace();
+                        callDetailActivity(p);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener (){
+                    public void onFailure(Exception e){
+                        ApiException apiException = (ApiException) e;
+                        int statusCode = apiException.getStatusCode();
+                    }
+                });
 
         return null;
     }
 
 
-    //    Google PlacesAPI 의 place 객체를 전달 받아 DetailActivity 에 전달하며 액티비티 실행
+    // Google PlacesAPI 의 place 객체를 전달 받음
+    // 특정 장소 클릭 시 동작
     private void callDetailActivity(Place place) {
-/*
-        Intent intent = new Intent (MainActivity.this, DetailActivity.class);
-        intent.putExtra ("name", place.getName ());
-        intent.putExtra ("phone", place.getPhoneNumber ());
-        intent.putExtra ("address", place.getAddress ());
 
-        startActivity (intent);
 
- */
     }
 
     @Override
@@ -263,14 +276,28 @@ public class ParkingSearchActivity extends AppCompatActivity {
             case R.id.button_search:
                 String inputLocation = editText.getText ().toString ();
 
-                lat = 0.0;
-                log = 0.0;
+                mLat = 360.0;
+                mLng = 360.0;
 
                 if (inputLocation.getBytes ().length > 0) {
                     executeReverseGeocoding (inputLocation);
                 } else {
                     Toast.makeText (ParkingSearchActivity.this, "위치를 입력하세요", Toast.LENGTH_SHORT).show ();
                 }
+                break;
+            case R.id.allResult:
+                Intent intent = new Intent (ParkingSearchActivity.this, SearchResultActivity.class);
+                intent.putExtra("inputLocation", editText.getText().toString());
+
+                ArrayList<Result> resultList = new ArrayList<Result>();
+                for(int i=0; i<markerList.size(); i++){
+                    Marker m = markerList.get(i);
+                    String name = m.getTitle();
+                    LatLng ll = m.getPosition();
+                    resultList.add(new Result(name, ll.latitude, ll.longitude));
+                }
+                intent.putExtra ("resultList", (Serializable) resultList);
+                startActivity (intent);
                 break;
         }
     }
@@ -305,18 +332,25 @@ public class ParkingSearchActivity extends AppCompatActivity {
         protected void onPostExecute(List<Address> addresses) {
             if (addresses != null) {
                 Address address = addresses.get (0);
-                lat = address.getLatitude ();
-                log = address.getLongitude ();
-                Toast.makeText (ParkingSearchActivity.this, "317라인 = lat : " + lat + ", log : " + log, Toast.LENGTH_SHORT).show ();
+                mLat = address.getLatitude ();
+                mLng = address.getLongitude ();
+                Toast.makeText (ParkingSearchActivity.this, "317라인 = lat : " + mLat + ", log : " + mLng, Toast.LENGTH_SHORT).show ();
 
-                if (lat != 0.0 && log != 0.0)
-                    searchStart (lat, log, 1000, PlaceTypes.PARKING);
+                if (mLat != 360.0 && mLng != 360.0) {
+                    mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(mLat, mLng), 14));
+                    searchStart (mLat, mLng, 1000, PlaceTypes.PARKING);
+                }
                 else
                     Toast.makeText (ParkingSearchActivity.this, "정확한 위치명을 입력하세요", Toast.LENGTH_SHORT).show ();
             }
         }
     }
 }
+
+
+
+
+
 
 
 /* 메뉴 정보*/
