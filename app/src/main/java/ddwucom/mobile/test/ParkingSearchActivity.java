@@ -1,5 +1,7 @@
 package ddwucom.mobile.test;
 
+import static java.lang.Thread.sleep;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -58,26 +60,24 @@ import ddwu.mobile.place.placebasic.pojo.PlaceBasic;
 
 /* 주차장 찾기 (검색) 페이지 */
 public class ParkingSearchActivity extends AppCompatActivity {
+
     final String TAG = "ParkingSearchActivity";
     final static int PERMISSION_REQ_CODE = 100;
-
-    String kind1 = "PP"; // 주차장 구분
-    String kind2 = "OFF"; // 주차장 유형
-    String kind3 = "FREE"; // 요금 정보
-
-    Double mLat = 360.0; // 위도 초기값
-    Double mLng = 360.0; // 경도 초기값
-
-    FusedLocationProviderClient flpClient;
-    Location mLastLocation;
-    Marker marker;
-    Marker mCenterMarker;
-    List<Marker> markerList;
 
     private GoogleMap mGoogleMap;       // 지도 객체
     private PlaceBasicManager placeBasicManager;
     private PlacesClient placesClient;
     private EditText editText;
+    private int count;
+
+    Double mLat = 360.0; // 위도 초기값
+    Double mLng = 360.0; // 경도 초기값
+    FusedLocationProviderClient flpClient;
+    Location mLastLocation;
+    Marker mCenterMarker;
+    List<Marker> markerList;
+    ArrayList<Result> resultList;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,8 +200,6 @@ public class ParkingSearchActivity extends AppCompatActivity {
                     // 지정한 위치로 애니메이션 이동
                     mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (currentLoc, 17));
                     mCenterMarker.setPosition (currentLoc);
-
-                    // Toast.makeText(ParkingSearchActivity.this, "위도 : " + lat + ", 경도 : " + lng, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -271,7 +269,7 @@ public class ParkingSearchActivity extends AppCompatActivity {
         }
     }
 
-    public void onClick(View v) {
+    public void onClick(View v) throws InterruptedException {
         switch (v.getId ()) {
             case R.id.button_search:
                 String inputLocation = editText.getText ().toString ();
@@ -286,19 +284,63 @@ public class ParkingSearchActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.allResult:
-                Intent intent = new Intent (ParkingSearchActivity.this, SearchResultActivity.class);
-                intent.putExtra("inputLocation", editText.getText().toString());
+                if(markerList != null) {
+                    intent = new Intent (ParkingSearchActivity.this, SearchResultActivity.class);
+                    intent.putExtra ("inputLocation", editText.getText ().toString ());
 
-                ArrayList<Result> resultList = new ArrayList<Result>();
-                for(int i=0; i<markerList.size(); i++){
-                    Marker m = markerList.get(i);
-                    String name = m.getTitle();
-                    LatLng ll = m.getPosition();
-                    resultList.add(new Result(name, ll.latitude, ll.longitude));
-                }
+                    resultList = new ArrayList<Result> ();
+                    count = 0;
+
+                    for (int i = 0; i < markerList.size (); i++) {
+                        count++;
+                        Marker m = markerList.get (i);
+                        String name = m.getTitle ();
+                        LatLng ll = m.getPosition ();
+
+                        // 문제 = intent는 이미 시작했는데 비동기는 진행중일수도 있으니까
+                        Result result = new Result(name, ll.latitude, ll.longitude);
+                        executeGeocoding(result);
+                    }
+                } else
+                    Toast.makeText (ParkingSearchActivity.this, "정확한 위치명을 입력하세요", Toast.LENGTH_SHORT).show ();
+                break;
+        }
+    }
+
+    private void executeGeocoding(Result result){
+        if(Geocoder.isPresent()){
+            if(result != null)
+                new GeoTask ().execute(result);
+        }
+    }
+
+    class GeoTask extends AsyncTask<Result, Void, List<Address>> {
+        Geocoder geocoder = new Geocoder(ParkingSearchActivity.this, Locale.getDefault());
+        Result result;
+
+        public List<Address> doInBackground(Result...locations){
+            List<Address> address = null;
+            result = locations[0];
+
+            try{
+                address = geocoder.getFromLocation(locations[0].lat, locations[0].lng, 1);
+            } catch(IOException e){
+                e.printStackTrace();
+            }
+            return address;
+        }
+
+        public void onPostExecute(List<Address> addresses){
+            if (addresses != null) {
+                Address address = addresses.get(0);
+                String markerAddress = address.getAddressLine (0);
+                resultList.add (new Result (result.name, result.lat, result.lng, markerAddress));
+            }
+
+            if(count == markerList.size()){
                 intent.putExtra ("resultList", (Serializable) resultList);
                 startActivity (intent);
-                break;
+            }
         }
     }
 
@@ -331,79 +373,21 @@ public class ParkingSearchActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Address> addresses) {
             if (addresses != null) {
-                Address address = addresses.get (0);
-                mLat = address.getLatitude ();
-                mLng = address.getLongitude ();
-                Toast.makeText (ParkingSearchActivity.this, "317라인 = lat : " + mLat + ", log : " + mLng, Toast.LENGTH_SHORT).show ();
-
-                if (mLat != 360.0 && mLng != 360.0) {
-                    mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(mLat, mLng), 14));
-                    searchStart (mLat, mLng, 1000, PlaceTypes.PARKING);
-                }
-                else
+                if (addresses.size () == 0) { // 정확한 위치명을 입력하지 않은 경우
                     Toast.makeText (ParkingSearchActivity.this, "정확한 위치명을 입력하세요", Toast.LENGTH_SHORT).show ();
+                } else {
+
+                    Address address = addresses.get (0);
+                    mLat = address.getLatitude ();
+                    mLng = address.getLongitude ();
+
+                    if (mLat != 360.0 && mLng != 360.0) {
+                        mGoogleMap.animateCamera (CameraUpdateFactory.newLatLngZoom (new LatLng (mLat, mLng), 14));
+                        searchStart (mLat, mLng, 1000, PlaceTypes.PARKING);
+                    } else
+                        Toast.makeText (ParkingSearchActivity.this, "정확한 위치명을 입력하세요", Toast.LENGTH_SHORT).show ();
+                }
             }
         }
     }
 }
-
-
-
-
-
-
-
-/* 메뉴 정보*/
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater mif = getMenuInflater();
-        mif.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // 버튼 클릭했을 때 동작하는 함수 작성
-        switch (item.getItemId()) {
-            case R.id.PP: // 주차장 구분 : 공영
-                kind1 = "PP";
-                break;
-            case R.id.PM: // 주차장 구분 : 민영
-                kind1 = "PM";
-                break;
-            case R.id.OFF: // 주차장 유형 : 노외
-                kind2 = "OFF";
-                break;
-            case R.id.ON: // 주차장 유형 : 노상
-                kind2 = "ON";
-                break;
-            case R.id.ELSE: // 주차상 유형 : 부설
-                kind2 = "ELSE";
-                break;
-            case R.id.FREE: // 요금 정보 : 무료
-                kind3 = "FREE";
-                break;
-            case R.id.PAY: // 요금 정보 : 유료
-                kind3 = "PAY";
-                break;
-            case R.id.MIX: //요금 정보 : 혼합
-                kind3 = "MIX";
-                break;
-            case R.id.allResult: // 리스트 형식의 모든 결과 보기
-                Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
-                intent.putExtra("kind1",kind1);
-                intent.putExtra("kind2", kind2);
-                intent.putExtra("kind3", kind3);
-                intent.putExtra("input", editText.getText().toString());
-                startActivity(intent);
-                break;
-        }
-
-        // 선택에 따라 값이 변하는지 테스트 해볼 것
-        Toast.makeText(ParkingSearchActivity.this, kind1 + kind2 + kind3, Toast.LENGTH_LONG).show();
-        return false;
-    }
-    */
-

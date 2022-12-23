@@ -6,11 +6,27 @@ public class Result implements Serializable {
     String name;
     Double lat;
     Double lng;
+    String address;
 
     public Result(String name, Double lat, Double lng) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
+    }
+
+    public Result(String name, Double lat, Double lng, String address) {
+        this.name = name;
+        this.lat = lat;
+        this.lng = lng;
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getName() {
