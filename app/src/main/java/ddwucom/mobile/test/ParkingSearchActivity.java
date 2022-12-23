@@ -297,8 +297,16 @@ public class ParkingSearchActivity extends AppCompatActivity {
                         String name = m.getTitle ();
                         LatLng ll = m.getPosition ();
 
-                        // 문제 = intent는 이미 시작했는데 비동기는 진행중일수도 있으니까
-                        Result result = new Result(name, ll.latitude, ll.longitude);
+                        Location mLoc = new Location("mLoc");
+                        mLoc.setLatitude (mLat); // 검색 위치 기준
+                        mLoc.setLongitude (mLng); // 검색 위치 기준
+
+                        Location search = new Location("search");
+                        search.setLatitude (ll.latitude);
+                        search.setLongitude (ll.longitude);
+
+                        float distance = Math.round(mLoc.distanceTo (search));
+                        Result result = new Result(name, ll.latitude, ll.longitude, distance);
                         executeGeocoding(result);
                     }
                 } else
@@ -334,7 +342,7 @@ public class ParkingSearchActivity extends AppCompatActivity {
             if (addresses != null) {
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
-                resultList.add (new Result (result.name, result.lat, result.lng, markerAddress));
+                resultList.add (new Result (result.name, result.lat, result.lng, markerAddress, result.far));
             }
 
             if(count == markerList.size()){

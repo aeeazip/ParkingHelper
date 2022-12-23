@@ -52,6 +52,7 @@ public class ListViewAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.parkingName = (TextView) convertView.findViewById(R.id.parkingName);
             viewHolder.address = (TextView) convertView.findViewById(R.id.address);
+            viewHolder.distance = (TextView) convertView.findViewById(R.id.distance);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
@@ -59,12 +60,13 @@ public class ListViewAdapter extends BaseAdapter {
 
         viewHolder.parkingName.setText(list.get(position).getName());
         viewHolder.address.setText(list.get(position).getAddress ());
-
+        viewHolder.distance.setText(String.valueOf(list.get(position).getFar ()) + "m");
         return convertView;
     }
 
     class ViewHolder{
         public TextView parkingName;
         public TextView address;
+        public TextView distance;
     }
 }

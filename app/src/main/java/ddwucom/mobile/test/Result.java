@@ -7,18 +7,29 @@ public class Result implements Serializable {
     Double lat;
     Double lng;
     String address;
+    float far;
 
-    public Result(String name, Double lat, Double lng) {
+    public Result(String name, Double lat, Double lng, float far) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
+        this.far = far;
     }
 
-    public Result(String name, Double lat, Double lng, String address) {
+    public Result(String name, Double lat, Double lng, String address, float far) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
         this.address = address;
+        this.far = far;
+    }
+
+    public float getFar() {
+        return far;
+    }
+
+    public void setFar(float far) {
+        this.far = far;
     }
 
     public String getAddress() {
