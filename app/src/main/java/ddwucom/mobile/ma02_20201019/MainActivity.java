@@ -1,10 +1,11 @@
-package ddwucom.mobile.test;
+package ddwucom.mobile.ma02_20201019;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
 
 /* 메인 페이지 */
 public class MainActivity extends AppCompatActivity {

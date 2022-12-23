@@ -1,4 +1,4 @@
-package ddwucom.mobile.test;
+package ddwucom.mobile.ma02_20201019;
 
 import java.io.Serializable;
 
@@ -8,20 +8,31 @@ public class Result implements Serializable {
     Double lng;
     String address;
     float far;
+    String rating;
 
-    public Result(String name, Double lat, Double lng, float far) {
+    public Result(String name, Double lat, Double lng, float far, String rating) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
         this.far = far;
+        this.rating = rating;
     }
 
-    public Result(String name, Double lat, Double lng, String address, float far) {
+    public Result(String name, Double lat, Double lng, String address, float far, String rating) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
         this.address = address;
         this.far = far;
+        this.rating = rating;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 
     public float getFar() {

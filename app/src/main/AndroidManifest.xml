@@ -37,7 +37,8 @@
         </activity>
         <activity android:name=".ParkingSearchActivity" />
         <activity android:name=".Result" />
-        <activity android:name=".SearchResultActivity" />
+        <activity android:name=".SearchResultActivity" android:noHistory="true" />
+        <activity android:name=".ParkingInformation" android:noHistory="true" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package ddwucom.mobile.test;
+package ddwucom.mobile.ma02_20201019;
 
 import static java.lang.Thread.sleep;
 
@@ -9,20 +9,15 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -68,10 +63,12 @@ public class ParkingSearchActivity extends AppCompatActivity {
     private PlaceBasicManager placeBasicManager;
     private PlacesClient placesClient;
     private EditText editText;
-    private int count;
 
     Double mLat = 360.0; // 위도 초기값
     Double mLng = 360.0; // 경도 초기값
+    String rating;
+    int count;
+
     FusedLocationProviderClient flpClient;
     Location mLastLocation;
     Marker mCenterMarker;
@@ -106,7 +103,6 @@ public class ParkingSearchActivity extends AppCompatActivity {
                     options.icon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_RED));
                     Marker marker = mGoogleMap.addMarker (options); // addMarker 반환 타입이 Marker임
                     marker.setTag (place.getPlaceId ());
-
                     markerList.add (marker);
                 }
             }
@@ -138,7 +134,7 @@ public class ParkingSearchActivity extends AppCompatActivity {
                 checkSelfPermission (Manifest.permission.ACCESS_COARSE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED) {
             // 권한이 있을 경우 수행할 동작
-            Toast.makeText (ParkingSearchActivity.this, "Permissions Granted", Toast.LENGTH_SHORT).show ();
+            // Toast.makeText (ParkingSearchActivity.this, "Permissions Granted", Toast.LENGTH_SHORT).show ();
         } else {
             // 권한 요청
             requestPermissions (new String[]{
@@ -219,12 +215,11 @@ public class ParkingSearchActivity extends AppCompatActivity {
         placeBasicManager.searchPlaceBasic (lat, lng, radius, type);
     }
 
-    /*Place ID 의 장소에 대한 세부정보 획득하여 반환
-     * 마커의 InfoWindow 클릭 시 호출*/
     private Place getPlaceDetail(String placeId) {
         List<Place.Field> placeFields = Arrays.asList(
                 Place.Field.ID, Place.Field.NAME,
-                Place.Field.LAT_LNG
+                Place.Field.LAT_LNG, Place.Field.PHONE_NUMBER,
+                Place.Field.RATING
         );
 
         FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
@@ -232,7 +227,8 @@ public class ParkingSearchActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>(){
                     public void onSuccess(FetchPlaceResponse response){
                         Place p = response.getPlace();
-                        callDetailActivity(p);
+                        rating = String.valueOf(p.getRating());
+                        // callDetailActivity(p);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener (){
@@ -263,7 +259,7 @@ public class ParkingSearchActivity extends AppCompatActivity {
                 mapLoad ();
             } else {
                 // 퍼미션 미획득 시 액티비티 종료
-                Toast.makeText (ParkingSearchActivity.this, "앱 실행을 위해 권한 허용이 필요함", Toast.LENGTH_SHORT).show ();
+                // Toast.makeText (ParkingSearchActivity.this, "앱 실행을 위해 권한 허용이 필요함", Toast.LENGTH_SHORT).show ();
                 finish ();
             }
         }
@@ -306,7 +302,9 @@ public class ParkingSearchActivity extends AppCompatActivity {
                         search.setLongitude (ll.longitude);
 
                         float distance = Math.round(mLoc.distanceTo (search));
-                        Result result = new Result(name, ll.latitude, ll.longitude, distance);
+                        String placeId = m.getTag().toString();
+                        getPlaceDetail(placeId);
+                        Result result = new Result(name, ll.latitude, ll.longitude, distance, rating);
                         executeGeocoding(result);
                     }
                 } else
@@ -342,7 +340,7 @@ public class ParkingSearchActivity extends AppCompatActivity {
             if (addresses != null) {
                 Address address = addresses.get(0);
                 String markerAddress = address.getAddressLine (0);
-                resultList.add (new Result (result.name, result.lat, result.lng, markerAddress, result.far));
+                resultList.add (new Result (result.name, result.lat, result.lng, markerAddress, result.far, result.rating));
             }
 
             if(count == markerList.size()){
@@ -354,11 +352,8 @@ public class ParkingSearchActivity extends AppCompatActivity {
 
     private void executeReverseGeocoding(String str) {
         if (Geocoder.isPresent ()) {
-            Toast.makeText (ParkingSearchActivity.this, "Run ReverseGeocoder", Toast.LENGTH_SHORT).show ();
             if (str != null)
                 new ReverseGeoTask ().execute (str);
-        } else {
-            Toast.makeText (ParkingSearchActivity.this, "No ReverseGeocoder", Toast.LENGTH_SHORT).show ();
         }
     }
 

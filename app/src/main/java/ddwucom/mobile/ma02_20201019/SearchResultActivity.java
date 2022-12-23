@@ -1,18 +1,14 @@
-package ddwucom.mobile.test;
+package ddwucom.mobile.ma02_20201019;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
@@ -48,6 +44,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 Intent intent = new Intent(SearchResultActivity.this, ParkingInformation.class);
                 Result result = resultList.get(i);
                 intent.putExtra("result", result);
+                startActivity(intent);
             }
         });
     }
@@ -57,10 +54,13 @@ public class SearchResultActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    // 버튼 안먹는다
     public void onClick(View v){
         switch(v.getId()){
             case R.id.back:
-                finish();
+                // 이전 Activity에서 비동기적으로 intent를 호출하면서 finish() 해줘도 결과값이 하나 줄어드는 화면으로 돌아간다
+                // 따라서 Manifest에 android:noHistory="true" 등록해주면 기록이 지워지면서 검색 화면으로 돌아가게 해준다
+                finish(); 
                 break;
         }
     }

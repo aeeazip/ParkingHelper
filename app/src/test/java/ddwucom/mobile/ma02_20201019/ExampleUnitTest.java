@@ -1,4 +1,4 @@
-package ddwucom.mobile.test;
+package ddwucom.mobile.ma02_20201019;
 
 import org.junit.Test;
 
