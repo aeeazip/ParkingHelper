@@ -2,6 +2,7 @@ package ddwucom.mobile.ma02_20201019;
 
 import java.io.Serializable;
 
+/* Google Place Service + Detail 검색 결과 담는 객체 */
 public class Result implements Serializable {
     String name;
     Double lat;

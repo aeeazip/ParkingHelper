@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/* 검색 위치 근처의 모든 검색 결과를 보여주는 ListViewAdapter */
 public class ListViewAdapter extends BaseAdapter {
     String TAG = "ListViewAdapter";
 

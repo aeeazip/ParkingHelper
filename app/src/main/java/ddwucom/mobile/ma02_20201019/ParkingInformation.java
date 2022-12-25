@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+/* 선택한 주차장 정보 + 블로그 검색 결과 보여주는 페이지 */
 public class ParkingInformation extends AppCompatActivity {
 
     public static final String TAG = "ParkingInformation";
@@ -97,7 +99,9 @@ public class ParkingInformation extends AppCompatActivity {
             case R.id.star: // 즐겨찾기에 등록
                 // 이미 등록된 주차장인지 먼저 체크
                 // 등록 안되있으면 즐겨찾기 추가 class로 이동
-                Intent intent = new Intent(ParkingInformation.class, )
+                Intent intent = new Intent(ParkingInformation.class, RegisterFavorite.class);
+                intent.putExtra ("result", (Serializable) result);
+                startActivity(intent);
                 break;
             case R.id.blog: // 주차장 블로그 검색 결과 보기
                 if (!isOnline ()) {

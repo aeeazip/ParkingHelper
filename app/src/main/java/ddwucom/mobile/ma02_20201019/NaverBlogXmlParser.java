@@ -7,6 +7,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+/* 네이버 블로그 api paring */
 public class NaverBlogXmlParser {
     private String TAG = "NaverBlogXmlParser";
 

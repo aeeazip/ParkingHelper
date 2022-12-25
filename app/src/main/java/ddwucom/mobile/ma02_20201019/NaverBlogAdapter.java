@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/* 네이버 블로그 api 검색 결과 보여주는 ListViewAdapter */
 public class NaverBlogAdapter extends BaseAdapter {
     String TAG = "NaverBlogAdapter";
 

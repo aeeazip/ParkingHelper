@@ -3,6 +3,7 @@ package ddwucom.mobile.ma02_20201019;
 import android.text.Html;
 import android.text.Spanned;
 
+/* 네이버 블로그 api 검색 결과 담는 객체 */
 public class NaverBlogDto {
     private int _id;
     private String blogTitle;
