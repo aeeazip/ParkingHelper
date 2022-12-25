@@ -13,7 +13,7 @@
         android:layout_marginTop="4dp"
         android:text="TextView"
         android:textColor="#000000"
-        android:textSize="30sp"
+        android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,15 +40,28 @@
 
     <Button
         android:id="@+id/star"
-        android:layout_width="57dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="108dp"
+        android:backgroundTint="#44608A"
         android:onClick="onClick"
-        android:text="☆"
-        android:textSize="20sp"
+        android:text="즐겨찾기"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#44608A"
+        android:onClick="onClick"
+        android:text="이전으로"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -121,6 +134,15 @@
         android:layout_marginTop="196dp"
         android:onClick="onClick"
         android:text="blog 검색 결과 보기"
+        android:backgroundTint="#44608A"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/blog_listView"
+        android:layout_width="match_parent"
+        android:layout_height="425dp"
+        android:layout_marginTop="252dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -20,8 +20,6 @@ public class SearchResultActivity extends AppCompatActivity {
     private TextView input;
     private ListView listView;
     private ListViewAdapter adapter;
-    private int page = 0;
-    private final int OFFSET = 20;
     private List<Result> resultList;
 
     @Override
