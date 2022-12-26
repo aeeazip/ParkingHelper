@@ -93,7 +93,16 @@ public class LookUpFavorite extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        cursor 사용 종료
-        if (cursor != null) cursor.close();
+
+        if (cursor != null)
+            cursor.close();
+    }
+
+    public void onClick(View v){
+        switch(v.getId()){
+            case R.id.back:
+                finish();
+                break;
+        }
     }
 }
