@@ -15,7 +15,7 @@ import java.util.List;
 /* 전체 검색 결과 페이지 */
 public class SearchResultActivity extends AppCompatActivity {
 
-    String TAG = "SearchResultActivity";
+    private String TAG = "SearchResultActivity";
 
     private TextView input;
     private ListView listView;

@@ -3,6 +3,8 @@ package ddwucom.mobile.ma02_20201019;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -51,6 +53,9 @@ public class ParkingInformation extends AppCompatActivity {
     private List<NaverBlogDto> resultList;
     private NaverBlogXmlParser parser;
 
+    private Cursor cursor;
+    private ParkingDBHelper helper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
@@ -79,6 +84,8 @@ public class ParkingInformation extends AppCompatActivity {
         apiAddress = getResources ().getString(R.string.api_url);
         parser = new NaverBlogXmlParser ();
 
+        helper = new ParkingDBHelper (this);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -97,11 +104,15 @@ public class ParkingInformation extends AppCompatActivity {
     public void onClick(View v){
         switch(v.getId()) {
             case R.id.star: // 즐겨찾기에 등록
-                // 이미 등록된 주차장인지 먼저 체크
-                // 등록 안되있으면 즐겨찾기 추가 class로 이동
-                Intent intent = new Intent(ParkingInformation.class, RegisterFavorite.class);
-                intent.putExtra ("result", (Serializable) result);
-                startActivity(intent);
+                SQLiteDatabase db = helper.getReadableDatabase();
+                cursor = db.rawQuery("select * from " + ParkingDBHelper.TABLE_NAME
+                        + " where " + ParkingDBHelper.COL_NAME + " = ?", new String[]{ result.getName() });
+                if(cursor.getCount() == 0) {
+                    Intent intent = new Intent (this, RegisterFavorite.class);
+                    intent.putExtra ("result", (Serializable) result);
+                    startActivity (intent);
+                } else
+                    Toast.makeText (this, "이미 즐겨찾기에 등록되었습니다.", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.blog: // 주차장 블로그 검색 결과 보기
                 if (!isOnline ()) {
