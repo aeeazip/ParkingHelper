@@ -101,7 +101,8 @@ public class LookUpFavorite extends AppCompatActivity {
     public void onClick(View v){
         switch(v.getId()){
             case R.id.back:
-                finish();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
                 break;
         }
     }
