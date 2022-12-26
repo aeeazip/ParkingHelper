@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -108,6 +105,7 @@ public class ParkingInformation extends AppCompatActivity {
                 cursor = db.rawQuery("select * from " + ParkingDBHelper.TABLE_NAME
                         + " where " + ParkingDBHelper.COL_NAME + " = ?", new String[]{ result.getName() });
                 if(cursor.getCount() == 0) {
+                    Log.d(TAG, "결과 없음");
                     Intent intent = new Intent (this, RegisterFavorite.class);
                     intent.putExtra ("result", (Serializable) result);
                     startActivity (intent);
@@ -122,7 +120,7 @@ public class ParkingInformation extends AppCompatActivity {
                 query = infoName.getText ().toString ();  // 검색어 = 주차장명
                 new NaverAsyncTask ().execute (apiAddress, query);
                 break;
-            case R.id.back:
+            case R.id.update:
                 finish();
                 break;
         }

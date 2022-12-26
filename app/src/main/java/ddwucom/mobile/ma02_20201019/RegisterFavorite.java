@@ -59,7 +59,7 @@ public class RegisterFavorite extends AppCompatActivity {
 
     public void onClick(View v){
         switch(v.getId()){
-            case R.id.add:
+            case R.id.remove:
                 // DB 데이터 삽입 작업 수행
                 SQLiteDatabase db = helper.getWritableDatabase();
 
@@ -74,11 +74,14 @@ public class RegisterFavorite extends AppCompatActivity {
 
                 String msg = result > 0 ? "즐겨찾기 추가 성공!" : "즐겨찾기 추가 실패!";
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, LookUpFavorite.class);
+                startActivity(intent);
                 break;
-            case R.id.back:
+            case R.id.update:
                 finish();
                 break;
-            case R.id.addImage:
+            case R.id.goToAll:
                 dispatchTakePictureIntent ();
                 break;
         }
@@ -97,7 +100,7 @@ public class RegisterFavorite extends AppCompatActivity {
 
             // 파일을 정상 생성하였을 경우
             if(photoFile != null){
-                Uri photoURI = FileProvider.getUriForFile(this, "ddwu.com.mobile.multimedia.photo.fileprovider", photoFile);
+                Uri photoURI = FileProvider.getUriForFile(this, "ddwucom.mobile.ma02_20201019.fileprovider", photoFile);
 
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult (takePictureIntent, REQUEST_TAKE_PHOTO);

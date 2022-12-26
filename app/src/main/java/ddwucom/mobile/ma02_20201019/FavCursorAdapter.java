@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/* 전체 즐겨찾기 목록 조회 화면 제공 cursorAdapter */
 public class FavCursorAdapter extends CursorAdapter {
     final static String TAG = "MyCursorAdapter";
 
@@ -32,6 +33,7 @@ public class FavCursorAdapter extends CursorAdapter {
 //        Tag에 저장한 ViewHolder 추출 후 view 를 생성하였는지 확인
         ViewHolder holder = (ViewHolder) view.getTag();
 
+        Log.d(TAG, "여기 둘어와땅");
         if (holder.favoriteName == null) {
             holder.favoriteName = view.findViewById(R.id.favoriteName);
             holder.favoriteMemo = view.findViewById(R.id.favoriteMemo);

@@ -19,11 +19,13 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View v){
         switch(v.getId()){
             case R.id.search: // 전국 주차장 검색
-                Intent intent = new Intent(getApplicationContext(), ParkingSearchActivity.class);
-                startActivity(intent);
+                Intent searchIntent = new Intent(getApplicationContext(), ParkingSearchActivity.class);
+                startActivity(searchIntent);
                 break;
             case R.id.favorite: // 즐겨찾기
-
+                Intent favoriteIntent = new Intent(getApplicationContext (), LookUpFavorite.class);
+                startActivity(favoriteIntent);
+                break;
         }
     }
 }

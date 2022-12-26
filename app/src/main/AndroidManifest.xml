@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Test"
         tools:targetApi="31">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="ddwucom.mobile.ma02_20201019.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -39,6 +50,9 @@
         <activity android:name=".Result" />
         <activity android:name=".SearchResultActivity" android:noHistory="true" />
         <activity android:name=".ParkingInformation" android:noHistory="true" />
+        <activity android:name=".RegisterFavorite" />
+        <activity android:name=".LookUpFavorite" />
+        <activity android:name=".FavoriteDetail" />
     </application>
 
 </manifest>

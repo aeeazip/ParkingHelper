@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,7 +54,7 @@ public class SearchResultActivity extends AppCompatActivity {
     // 버튼 안먹는다
     public void onClick(View v){
         switch(v.getId()){
-            case R.id.back:
+            case R.id.update:
                 // 이전 Activity에서 비동기적으로 intent를 호출하면서 finish() 해줘도 결과값이 하나 줄어드는 화면으로 돌아간다
                 // 따라서 Manifest에 android:noHistory="true" 등록해주면 기록이 지워지면서 검색 화면으로 돌아가게 해준다
                 finish(); 

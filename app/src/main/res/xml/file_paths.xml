@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--파일을 저장할 경로 지정-->
+<!--ddwu.com.mobile.multimedia.photo.photocapturetest 는 실제 개발하는 앱의 패키지명으로 대체-->
+<paths>
+    <external-path name="my_images" path="Android/data/ddwucom.mobile.ma02_20201019/files/Pictures"/>
+</paths>

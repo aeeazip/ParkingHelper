@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
-        android:layout_marginTop="572dp"
+        android:layout_marginTop="450dp"
         android:layout_marginRight="6dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/back"
+            android:id="@+id/update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="3dp"
@@ -75,7 +75,7 @@
             android:text="뒤로 가기" />
 
         <Button
-            android:id="@+id/add"
+            android:id="@+id/remove"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
@@ -88,10 +88,10 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="382dp"
-        android:layout_height="269dp"
-        android:layout_marginTop="104dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="120dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -101,25 +101,25 @@
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:layout_marginLeft="6dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginTop="348dp"
         android:layout_marginRight="6dp"
         android:ems="10"
         android:hint="메모를 입력하세요"
         android:inputType="textPersonName"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/addImage"
+        android:id="@+id/goToAll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
-        android:layout_marginTop="524dp"
+        android:layout_marginTop="408dp"
         android:layout_marginRight="6dp"
         android:backgroundTint="#44608A"
+        android:onClick="onClick"
         android:text="이미지 추가하기"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
