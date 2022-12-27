@@ -15,17 +15,20 @@
 
 ### 4. Result Detail Screen
 
-1. 전체 검색 결과 조회
+> 1. 전체 검색 결과 조회
 <img src="https://user-images.githubusercontent.com/97737822/209672398-63bf7d08-549e-4598-84a7-6d0e9e6fa26e.png" width="300" height="550" />
 
-2. 주차장 세부 정보 출력
+> 2. 주차장 세부 정보 출력
 <img src="https://user-images.githubusercontent.com/97737822/209672471-ac06e043-fd5b-4e1b-87ad-7c998602989d.png" width="300" height="250" />
 
 
 ### 5. Add Favorite Screen
 
-1. 즐겨찾기에 등록
+> 1. 즐겨찾기에 등록
 <img src="https://user-images.githubusercontent.com/97737822/209672842-dfaa4e66-c3fa-468c-9dca-81d39aa89cfc.png" width="300" height="550" />
 
-2. 전체 즐겨찾기 목록 조회
+> 2. 전체 즐겨찾기 목록 조회
 <img src="https://user-images.githubusercontent.com/97737822/209672909-0c110623-5e56-413e-822b-4a3ed90cef91.png" width="300" height="550" />
+
+### 6. Demo Video
+<img src="https://user-images.githubusercontent.com/97737822/209675254-b0a640fd-d3b9-4b73-b935-1f81e4b5bece.gif" width="300" height="550" />
