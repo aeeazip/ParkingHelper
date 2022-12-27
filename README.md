@@ -24,10 +24,10 @@
 
 ### 5. Add Favorite Screen
 
-> 1. 즐겨찾기에 등록
+>즐겨찾기에 등록
 <img src="https://user-images.githubusercontent.com/97737822/209672842-dfaa4e66-c3fa-468c-9dca-81d39aa89cfc.png" width="300" height="550" />
 
-> 2. 전체 즐겨찾기 목록 조회
+>전체 즐겨찾기 목록 조회
 <img src="https://user-images.githubusercontent.com/97737822/209672909-0c110623-5e56-413e-822b-4a3ed90cef91.png" width="300" height="550" />
 
 ### 6. Demo Video
