@@ -12,7 +12,7 @@
 Google Open API와 지도 API를 사용해서 전국 주차장 검색 기능을 구현했습니다.
 
 ## 초기 화면 디자인
-<img src="https://user-images.githubusercontent.com/97737822/219953872-e3b26a2b-f796-4729-8c08-c5e50876a224.png" width="800" height="1000" />
+<img src="https://user-images.githubusercontent.com/97737822/219953872-e3b26a2b-f796-4729-8c08-c5e50876a224.png" width="700" height="900" />
 
 ## 핵심 기능
 (1) 검색을 통해 사용자가 직접 위치를 설정하거나 gps를 통해 현재 위치 정보를 얻어와서 원하는 조건의 주차장을 보여줍니다. 마커를 선택하면 주차장 세부 정보를 확인할 수 있습니다. 
@@ -25,4 +25,5 @@ Google Open API와 지도 API를 사용해서 전국 주차장 검색 기능을 
 <img src="https://user-images.githubusercontent.com/97737822/209682799-074b5d3b-5da2-4914-a011-b6c67d24b52e.gif" width="300" height="550" />
 
 ## 최종 보고서
-최종 UI, 동작 과정 설명, 개선 방향 및 소감
+최종 UI, 동작 과정 설명, 개선 방향 및 소감 <br/>
+(https://github.com/aeeazip/ParkingHelper/blob/main/%EC%B5%9C%EC%A2%85%20%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf)
