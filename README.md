@@ -1,4 +1,5 @@
-# ParkingHelper (모바일 응용 : 주차장 위치 알림 앱)
+# ParkingHelper 
+모바일 응용 : 주차장 위치 알림 앱
 
 ## 기획 배경
 가구당 보유 차량은 늘어나고 있지만 주차할 곳이 없는 “주차난” 문제를 뉴스에서 본 적이 있습니다. 
@@ -11,7 +12,7 @@
 Google Open API와 지도 API를 사용해서 전국 주차장 검색 기능을 구현했습니다.
 
 ## 초기 화면 디자인
-<img src="https://user-images.githubusercontent.com/97737822/219953872-e3b26a2b-f796-4729-8c08-c5e50876a224.png" width="600" height="1200" />
+<img src="https://user-images.githubusercontent.com/97737822/219953872-e3b26a2b-f796-4729-8c08-c5e50876a224.png" width="800" height="1200" />
 
 ## 핵심 기능
 (1) 검색을 통해 사용자가 직접 위치를 설정하거나 gps를 통해 현재 위치 정보를 얻어와서 원하는 조건의 주차장을 보여줍니다. 마커를 선택하면 주차장 세부 정보를 확인할 수 있습니다. 
